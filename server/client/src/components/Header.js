@@ -4,7 +4,16 @@ class Header extends Component {
   render(){
     return(
       <div>
-        Header
+        <nav>
+          <div className="nav-wrapper">
+            <a className="nav-wrapper">
+            EMAILY
+            </a>
+            <ul id="nav-mobile" className="right">
+              <a href="/auth/google">LOGIN WITH GOOGLE</a>
+            </ul>
+          </div>
+        </nav>
       </div>
     )
   }
