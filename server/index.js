@@ -5,10 +5,12 @@ const cookieSession = require("cookie-session");
 const bodyParser = require('body-parser');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const requireLogin = require('./middlewares/requireLogin');
+const requireCredits = require('./middlewares/requireCredits');
 
 const keys = require("./config/keys")
 const stripe = require('stripe')(keys.stripeSecretKey);
 require("./models/User");
+require("./models/Survey");
 require("./services/passport");
 
 mongoose.connect(keys.mongoURI);
@@ -66,6 +68,10 @@ app.post('/api/stripe', requireLogin, (req,res) => {
     })
   .then((user) => res.send(user))
 });
+
+app.post('/api/surveys', requireLogin, requireCredits, (req,res) => {
+  
+})
 
 app.listen(8080, () => {
   console.log("server at 8080");
