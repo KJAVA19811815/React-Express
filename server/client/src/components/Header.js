@@ -15,8 +15,9 @@ class Header extends Component {
       default:
         return [
           <div>
-            <li key="a"><Payments /></li>,
-            <li key="b"><a href="/api/logout">LOGOUT</a></li>
+            <li key="1"><Payments /></li>,
+            <li key="3">CREDITS {this.props.auth.credits}</li>,
+            <li key="2"><a href="/api/logout">LOGOUT</a></li>
           </div>
         ]
 
