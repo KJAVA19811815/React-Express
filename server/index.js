@@ -2,16 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const requireLogin = require('./middlewares/requireLogin');
-const requireCredits = require('./middlewares/requireCredits');
+const requireLogin = require("./middlewares/requireLogin");
+const requireCredits = require("./middlewares/requireCredits");
 
-const keys = require("./config/keys")
-const stripe = require('stripe')(keys.stripeSecretKey);
+const keys = require("./config/keys");
+const stripe = require("stripe")(keys.stripeSecretKey);
 require("./models/User");
 require("./models/Survey");
 require("./services/passport");
+
+const Survey = mongoose.model("surveys");
 
 mongoose.connect(keys.mongoURI);
 
@@ -38,14 +40,14 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google"),
-  (req,res) => {
-    res.redirect('/surveys');
+  (req, res) => {
+    res.redirect("/surveys");
   }
 );
 
 app.get("/api/logout", (req, res) => {
   req.logout();
-  res.redirect('/');
+  res.redirect("/");
 });
 
 app.get("/api/current_user", (req, res) => {
@@ -53,25 +55,36 @@ app.get("/api/current_user", (req, res) => {
   res.send(req.user);
 });
 
-app.post('/api/stripe', requireLogin, (req,res) => {
-  stripe.charges.create({
-    amount: 500,
-    currency: 'usd',
-    description: '5 f0r 5',
-    source: req.body.id
-  },function(err, charge){
-    console.log(charge);
-  })
-  .then(() => {
+app.post("/api/stripe", requireLogin, (req, res) => {
+  stripe.charges
+    .create(
+      {
+        amount: 500,
+        currency: "usd",
+        description: "5 f0r 5",
+        source: req.body.id
+      },
+      function(err, charge) {
+        console.log(charge);
+      }
+    )
+    .then(() => {
       req.user.credits += 5;
-      return req.user.save()
+      return req.user.save();
     })
-  .then((user) => res.send(user))
+    .then(user => res.send(user));
 });
 
-app.post('/api/surveys', requireLogin, requireCredits, (req,res) => {
-  
-})
+app.post("/api/surveys", requireLogin, requireCredits, (req, res) => {
+  const { title, subject, body, recipients } = req.body;
+
+  const survey = new Survye{(
+    title: title,
+    subject: subject,
+    body: body,
+    
+  )}
+});
 
 app.listen(8080, () => {
   console.log("server at 8080");
